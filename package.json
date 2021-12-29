@@ -5,10 +5,10 @@
     "build": "yarn workspaces run build",
     "start": "yarn workspace @web-speed-hackathon-2021/server start"
   },
-  "workspaces": [
-    "client",
-    "server"
-  ],
+  "workspaces": {
+    "packages": ["client", "server"],
+    "nohoist": ["**/client/**"]
+  },
   "engines": {
     "node": "16.x.x"
   }

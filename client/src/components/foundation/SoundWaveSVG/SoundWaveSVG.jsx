@@ -1,5 +1,70 @@
-import _ from 'lodash';
 import React from 'react';
+
+function _max(xs) {
+  if (xs && xs.length > 0) {
+    let result = xs[0]
+    for (let i = 1; i < result.length; i++) {
+      let x = xs[i]
+      if (x > result) {
+        result = x
+      }
+    }
+    return result
+  } else {
+    return undefined
+  }
+}
+
+function _mean(xs) {
+  if (xs) {
+    let sum = 0
+    for (let i = 0; i < xs.length; i++) {
+      sum = sum + xs[i]
+    }
+    return sum/xs.length
+  } else {
+    return NaN
+  }
+}
+
+function _zip(...xss) {
+  let result = []
+  for (let i = 0; i < 1000000; i++) {
+    let as = []
+    xss.forEach(xs => {
+      if (i < xs.length) {
+        as.push(xs[i])
+      } else {
+        as.push(undefined)
+      }
+    })
+    if (as.findIndex(a => a != undefined) == -1) {
+      return result
+    }
+    result.push(as)
+  }
+  return result
+}
+
+function _chunk(xs, n) {
+  if (!xs) {
+    return []
+  }
+  let result = []
+  let i = 0
+  while (true) {
+    let as = []
+    for (let j = 0; j < n; j++) {
+      as.push(xs[i]);
+      i++
+      if (i >= xs.length) {
+        result.push(as)
+        return result
+      }
+    }
+    result.push(as)
+  }
+}
 
 /**
  * @param {ArrayBuffer} data
@@ -14,18 +79,18 @@ async function calculate(data) {
     audioCtx.decodeAudioData(data.slice(0), resolve, reject);
   });
   // 左の音声データの絶対値を取る
-  const leftData = _.map(buffer.getChannelData(0), Math.abs);
+  const leftData = buffer.getChannelData(0).map((x) => Math.abs(x));
   // 右の音声データの絶対値を取る
-  const rightData = _.map(buffer.getChannelData(1), Math.abs);
+  const rightData = buffer.getChannelData(1).map((x) => Math.abs(x));
 
   // 左右の音声データの平均を取る
-  const normalized = _.map(_.zip(leftData, rightData), _.mean);
+  const normalized = _zip(leftData, rightData).map((xs) => _mean(xs));
   // 100 個の chunk に分ける
-  const chunks = _.chunk(normalized, Math.ceil(normalized.length / 100));
+  const chunks = _chunk(normalized, Math.ceil(normalized.length / 100));
   // chunk ごとに平均を取る
-  const peaks = _.map(chunks, _.mean);
+  const peaks = chunks.map((xs) => _mean(xs));
   // chunk の平均の中から最大値を取る
-  const max = _.max(peaks);
+  const max = _max(peaks);
 
   return { max, peaks };
 }
