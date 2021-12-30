@@ -20,6 +20,14 @@ router.use(imageRouter);
 router.use(soundRouter);
 router.use(authRouter);
 
+router.use((_req, res, next) => {
+  res.header({
+    'Cache-Control': 'max-age=0, no-transform',
+    Connection: 'close',
+  });
+  return next();
+});
+
 router.use(async (err, _req, _res, _next) => {
   if (err instanceof ValidationError) {
     throw new httpErrors.BadRequest();
