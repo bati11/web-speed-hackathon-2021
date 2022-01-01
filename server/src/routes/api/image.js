@@ -33,9 +33,9 @@ router.post('/images', async (req, res) => {
   });
 
   const filePath = path.resolve(UPLOAD_PATH, `./images/${imageId}.${EXTENSION}`);
-  await fs.writeFile(filePath, converted);
+  await fs.writeFile(filePath, converted.image);
 
-  return res.status(200).type('application/json').send({ id: imageId });
+  return res.status(200).type('application/json').send({ id: imageId, w: converted.w, h: converted.h });
 });
 
 export { router as imageRouter };

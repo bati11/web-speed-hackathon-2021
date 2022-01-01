@@ -6,6 +6,7 @@ import { sequelize } from '../sequelize';
  * @typedef {object} ImageAttributes
  * @property {string} id
  * @property {string} alt
+ * @property {boolean} isLandscape
  */
 
 /**
@@ -18,6 +19,14 @@ const Image = sequelize.define('Image', {
     allowNull: false,
     defaultValue: '',
     type: DataTypes.STRING,
+  },
+  w: {
+    allowNull: false,
+    type: DataTypes.NUMBER,
+  },
+  h: {
+    allowNull: false,
+    type: DataTypes.NUMBER,
   },
   id: {
     allowNull: false,

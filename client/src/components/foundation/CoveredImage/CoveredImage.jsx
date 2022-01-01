@@ -9,49 +9,67 @@ import { fetchBinary } from '../../../utils/fetchers';
  * @typedef {object} Props
  * @property {string} alt
  * @property {string} src
+ * @property {number} imageWidth
+ * @property {number} imageHeight
+ * @property {number} imageCount
+ * @property {number} colspan
+ * @property {number} rowspan
  */
 
 /**
  * アスペクト比を維持したまま、要素のコンテンツボックス全体を埋めるように画像を拡大縮小します
  * @type {React.VFC<Props>}
  */
-const CoveredImage = ({ alt, src }) => {
-  const { data, isLoading } = useFetch(src, fetchBinary);
+const CoveredImage = ({ alt, src, imageWidth, imageHeight, imageCount, colspan, rowspan }) => {
+  // const { data, isLoading } = useFetch(src, fetchBinary);
 
-  const imageSize = React.useMemo(() => {
-    return data !== null ? sizeOf(Buffer.from(data)) : null;
-  }, [data]);
+  // const imageSize = React.useMemo(() => {
+  //   return data !== null ? sizeOf(Buffer.from(data)) : null;
+  // }, [data]);
 
-  const blobUrl = React.useMemo(() => {
-    return data !== null ? URL.createObjectURL(new Blob([data])) : null;
-  }, [data]);
+  // const blobUrl = React.useMemo(() => {
+  //   return data !== null ? URL.createObjectURL(new Blob([data])) : null;
+  // }, [data]);
 
-  const [containerSize, setContainerSize] = React.useState({ height: 0, width: 0 });
-  /** @type {React.RefCallback<HTMLDivElement>} */
-  const callbackRef = React.useCallback((el) => {
-    setContainerSize({
-      height: el?.clientHeight ?? 0,
-      width: el?.clientWidth ?? 0,
-    });
-  }, []);
+  // const [containerSize, setContainerSize] = React.useState({ height: 0, width: 0 });
+  // /** @type {React.RefCallback<HTMLDivElement>} */
+  // const callbackRef = React.useCallback((el) => {
+  //   setContainerSize({
+  //     height: el?.clientHeight ?? 0,
+  //     width: el?.clientWidth ?? 0,
+  //   });
+  // }, []);
 
-  if (isLoading || data === null || blobUrl === null) {
-    return null;
+  // if (isLoading || data === null || blobUrl === null) {
+  //   return null;
+  // }
+
+  // const containerRatio = containerSize.height / containerSize.width;
+  // const imageRatio = imageSize?.height / imageSize?.width;
+
+  let wfull = false
+  if (imageWidth < imageHeight) {
+    wfull = true
+  } else {
+    wfull = false
+    if (imageCount == 1 || (imageCount > 1 && rowspan == colspan)) {
+      wfull = true
+    }
   }
-
-  const containerRatio = containerSize.height / containerSize.width;
-  const imageRatio = imageSize?.height / imageSize?.width;
-
   return (
-    <div ref={callbackRef} className="relative w-full h-full overflow-hidden">
+    // <div ref={callbackRef} className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <img
         loading="lazy"
         alt={alt}
         className={classNames('absolute left-1/2 top-1/2 max-w-none transform -translate-x-1/2 -translate-y-1/2', {
-          'w-auto h-full': containerRatio > imageRatio,
-          'w-full h-auto': containerRatio <= imageRatio,
+          // 'w-auto h-full': containerRatio > imageRatio,
+          // 'w-full h-auto': containerRatio <= imageRatio,
+          'w-auto h-full': !wfull,
+          'w-full h-auto': wfull,
         })}
-        src={blobUrl}
+        // src={blobUrl}
+        src={src}
       />
     </div>
   );
