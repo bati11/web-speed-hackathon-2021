@@ -21,7 +21,11 @@ async function convertMovie(buffer, options) {
 
   ffmpeg.FS('writeFile', 'file', new Uint8Array(buffer));
 
-  await ffmpeg.run(...['-i', 'file', '-t', '5', '-r', '10', '-vf', `crop=${cropOptions}`, '-an', exportFile]);
+  if (oprtions.extension == 'webm') {
+    await ffmpeg.run(...['-i', 'file', '-c', 'vp9', '-b:v', '0', '-crf', '41', `crop=${cropOptions}`, '-an', exportFile]);
+  } else {
+    await ffmpeg.run(...['-i', 'file', '-t', '5', '-r', '10', '-vf', `crop=${cropOptions}`, '-an', exportFile]);
+  }
 
   return ffmpeg.FS('readFile', exportFile);
 }
