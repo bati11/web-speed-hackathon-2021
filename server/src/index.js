@@ -18,6 +18,8 @@ async function main() {
     const address = server.address();
     console.log(`Listening on ${address.address}:${address.port}`);
   });
+  server.keepAliveTimeout(10000)
+  server.headersTimeout(15000)
 }
 
 main().catch(console.error);
