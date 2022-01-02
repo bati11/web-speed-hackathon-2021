@@ -1,4 +1,4 @@
-import { gzip } from 'pako';
+import { gzipSync } from 'fflate';
 import axios from 'axios';
 
 /**
@@ -80,7 +80,7 @@ async function sendJSON(url, data) {
   console.log("sendJSON() url:" + url)
   const jsonString = JSON.stringify(data);
   const uint8Array = new TextEncoder().encode(jsonString);
-  const compressed = gzip(uint8Array);
+  const compressed = gzipSync(uint8Array);
 
   // const result = await $.ajax({
   //   async: false,
