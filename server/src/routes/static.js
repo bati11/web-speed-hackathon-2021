@@ -13,12 +13,12 @@ router.use(history());
 router.use(compression())
 
 function setCustomCacheControl(res, path) {
-  res.setHeader('Cache-Control', 'public, max-age=3600000')
+  res.setHeader('Cache-Control', 'public, max-age=864000')
 }
 
 router.use(
   serveStatic(UPLOAD_PATH, {
-    etag: false,
+    etag: true,
     lastModified: false,
     setHeaders: setCustomCacheControl,
   }),
@@ -26,7 +26,7 @@ router.use(
 
 router.use(
   serveStatic(PUBLIC_PATH, {
-    etag: false,
+    etag: true,
     lastModified: false,
     setHeaders: setCustomCacheControl,
   }),
@@ -34,7 +34,7 @@ router.use(
 
 router.use(
   serveStatic(CLIENT_DIST_PATH, {
-    etag: false,
+    etag: true,
     lastModified: false,
     setHeaders: setCustomCacheControl,
   }),
